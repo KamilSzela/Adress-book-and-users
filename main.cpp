@@ -11,6 +11,12 @@ struct Uzytkownik {
     int id;
     string nazwa, haslo;
 };
+struct Przyjaciel {
+    int id, idUzytkownika;
+    string imie, nazwisko;
+    string numerTelefonu;
+    string email, adres;
+};
 int konwersjaStringNaInt(string wyraz) {
     int i;
     istringstream iss(wyraz);
@@ -112,6 +118,118 @@ int logowanie(vector<Uzytkownik> &uzytkownicy)
     Sleep(1000);
     return 0;
 }
+void wczytajPrzyjaciolzPliku(vector<Przyjaciel> &przyjaciele, int idUzytkownika) {
+    fstream plik;
+    string odczytywanaLinia;
+    Przyjaciel nowyPrzyjaciel;
+    plik.open("przyjaciele.txt",ios::in);
+    while(plik.good()==true) {
+        while( !plik.eof() ) {
+            getline(plik,odczytywanaLinia,'|');
+            if(odczytywanaLinia=="\n"||odczytywanaLinia=="") {
+                break;
+            }
+            nowyPrzyjaciel.id=konwersjaStringNaInt(odczytywanaLinia);
+            getline(plik,odczytywanaLinia,'|');
+            nowyPrzyjaciel.idUzytkownika=konwersjaStringNaInt(odczytywanaLinia);
+            getline(plik,odczytywanaLinia,'|');
+            nowyPrzyjaciel.imie=odczytywanaLinia;
+            getline(plik,odczytywanaLinia,'|');
+            nowyPrzyjaciel.nazwisko=odczytywanaLinia;
+            getline(plik,odczytywanaLinia,'|');
+            nowyPrzyjaciel.numerTelefonu=odczytywanaLinia;
+            getline(plik,odczytywanaLinia,'|');
+            nowyPrzyjaciel.email=odczytywanaLinia;
+            getline(plik,odczytywanaLinia,'|');
+            nowyPrzyjaciel.adres=odczytywanaLinia;
+            if(nowyPrzyjaciel.idUzytkownika==idUzytkownika)
+            {
+                przyjaciele.push_back(nowyPrzyjaciel);
+            }
+        }
+    }
+    plik.close();
+}
+void wyswietlPrzyjaciela(Przyjaciel przyjaciel) {
+    cout<<przyjaciel.id<<endl;
+    cout<<przyjaciel.imie<<endl;
+    cout<<przyjaciel.nazwisko<<endl;
+    cout<<przyjaciel.numerTelefonu<<endl;
+    cout<<przyjaciel.email<<endl;
+    cout<<przyjaciel.adres<<endl;
+}
+void wyswietlWszystkichPrzyjaciol(vector <Przyjaciel> &przyjaciele) {
+    for(vector<Przyjaciel> ::iterator itr=przyjaciele.begin(); itr!=przyjaciele.end(); itr++) {
+        wyswietlPrzyjaciela(*itr);
+    }
+    system("pause");
+}
+void wyswietlMenuKsiazkiAdresowej(int idZalogowanegoUzytkownika)
+{
+
+        system("cls");
+        char wybor;
+        vector <Przyjaciel> przyjaciele;
+        wczytajPrzyjaciolzPliku(przyjaciele,idZalogowanegoUzytkownika);
+        cout<<"MENU Ksiazka adresowa"<<endl;
+        cout<<"-----------"<<endl;
+        cout<<"1.Dodaj nowego przyjaciela"<<endl;
+        cout<<"2.Wyswietl wszystkich przyjaciol o podanym imieniu"<<endl;
+        cout<<"3.Wyswietl wszystkich przyjaciol o podanym nazwisku"<<endl;
+        cout<<"4.Wyswietl wszystkich przyjaciol"<<endl;
+        cout<<"5.Usun z listy przyjaciol"<<endl;
+        cout<<"6.Edytuj dane wybranego przyjaciela"<<endl;
+        cout<<"9.Wyjscie z programu"<<endl;
+        cin>>wybor;
+
+        switch(wybor) {
+        case '1': {
+            system("cls");
+            //dodajPrzyjacielaDoListy(przyjaciele);
+            break;
+        }
+        case '2': {
+            system("cls");
+            //wyszukajPrzyjaciolOPodanymImieniu(przyjaciele);
+            break;
+        }
+        case '3': {
+            system("cls");
+            //wyszukajPrzyjaciolOPodanymNazwisku(przyjaciele);
+            break;
+        }
+        case '4': {
+            system("cls");
+            wyswietlWszystkichPrzyjaciol(przyjaciele);
+            break;
+        }
+        case '5':
+            system("cls");
+            //usunZListyPrzyjaciol(przyjaciele);
+            break;
+        case '6':
+           /* system("cls");
+            int IDprzyjacielaDoEdycji;
+            cout<<"Podaj ID przyjaciela do edycji: ";
+            cin>>IDprzyjacielaDoEdycji;
+            for(vector<Przyjaciel>::iterator i=przyjaciele.begin(); i<przyjaciele.end(); i++) {
+                if(i->id==IDprzyjacielaDoEdycji) {
+                    wyswietlPrzyjaciela(*i);
+                    cout<<endl;
+                    *i = edytujDanePrzyjaciela(*i);
+                }
+            }
+          zapiszPrzyjaciolWPlikuTekstowym(przyjaciele);*/
+            break;
+        case '9': {
+            exit(0);
+        }
+        default:
+            cout<<"Podano niepoprawna opcje, sprobuj jeszce raz:";
+            Sleep(1000);
+
+                }
+}
 int main() {
     vector <Uzytkownik> uzytkownicy;
     wczytajUzytkownikowZPliku(uzytkownicy);
@@ -148,65 +266,7 @@ int main() {
             }
             }
             else {
-                system("cls");
-        cout<<"MENU Ksiazka adresowa"<<endl;
-        cout<<"-----------"<<endl;
-        cout<<"1.Dodaj nowego przyjaciela"<<endl;
-        cout<<"2.Wyswietl wszystkich przyjaciol o podanym imieniu"<<endl;
-        cout<<"3.Wyswietl wszystkich przyjaciol o podanym nazwisku"<<endl;
-        cout<<"4.Wyswietl wszystkich przyjaciol"<<endl;
-        cout<<"5.Usun z listy przyjaciol"<<endl;
-        cout<<"6.Edytuj dane wybranego przyjaciela"<<endl;
-        cout<<"9.Wyjscie z programu"<<endl;
-                  cin>>wybor;
-
-        switch(wybor) {
-        case '1': {
-            system("cls");
-            //dodajPrzyjacielaDoListy(przyjaciele);
-            break;
-        }
-        case '2': {
-            system("cls");
-            //wyszukajPrzyjaciolOPodanymImieniu(przyjaciele);
-            break;
-        }
-        case '3': {
-            system("cls");
-            //wyszukajPrzyjaciolOPodanymNazwisku(przyjaciele);
-            break;
-        }
-        case '4': {
-            system("cls");
-            //wyswietlWszystkichPrzyjaciol(przyjaciele);
-            break;
-        }
-        case '5':
-            system("cls");
-            //usunZListyPrzyjaciol(przyjaciele);
-            break;
-        case '6':
-           /* system("cls");
-            int IDprzyjacielaDoEdycji;
-            cout<<"Podaj ID przyjaciela do edycji: ";
-            cin>>IDprzyjacielaDoEdycji;
-            for(vector<Przyjaciel>::iterator i=przyjaciele.begin(); i<przyjaciele.end(); i++) {
-                if(i->id==IDprzyjacielaDoEdycji) {
-                    wyswietlPrzyjaciela(*i);
-                    cout<<endl;
-                    *i = edytujDanePrzyjaciela(*i);
-                }
-            }
-          zapiszPrzyjaciolWPlikuTekstowym(przyjaciele);*/
-            break;
-        case '9': {
-            exit(0);
-        }
-        default:
-            cout<<"Podano niepoprawna opcje, sprobuj jeszce raz:";
-            Sleep(1000);
-
-                }
+                wyswietlMenuKsiazkiAdresowej(idZalogowanegoUzytkownika);
             }
         }
 
