@@ -118,6 +118,30 @@ int logowanie(vector<Uzytkownik> &uzytkownicy)
     Sleep(1000);
     return 0;
 }
+void zmianaHasla(vector<Uzytkownik> &uzytkownicy, int idZalogowanegoUzytkownika)
+{
+    string haslo;
+    cout<<"Prosze podac nowe haslo: ";
+    cin>>haslo;
+    for(vector<Uzytkownik>::iterator i=uzytkownicy.begin(); i!=uzytkownicy.end(); i++)
+    {
+        if(i->id == idZalogowanegoUzytkownika)
+        {
+            i->haslo=haslo;
+            cout<<"zmieniono haslo! ";
+            Sleep(1000);
+        }
+    }
+    fstream plik;
+    plik.open("uzytkownicy.txt", ios::out);
+    for(vector<Uzytkownik>::iterator i=uzytkownicy.begin(); i!=uzytkownicy.end(); i++)
+    {
+        plik<<i->id<<'|';
+        plik<<i->nazwa<<'|';
+        plik<<i->haslo<<'|'<<endl;
+    }
+    plik.close();
+}
 void wczytajPrzyjaciolzPliku(vector<Przyjaciel> &przyjaciele, int idUzytkownika) {
     fstream plik;
     string odczytywanaLinia;
@@ -151,7 +175,7 @@ void wczytajPrzyjaciolzPliku(vector<Przyjaciel> &przyjaciele, int idUzytkownika)
     plik.close();
 }
 void wyswietlPrzyjaciela(Przyjaciel przyjaciel) {
-    cout<<przyjaciel.id<<endl;
+    cout<<"ID: "<<przyjaciel.id<<endl;
     cout<<przyjaciel.imie<<endl;
     cout<<przyjaciel.nazwisko<<endl;
     cout<<przyjaciel.numerTelefonu<<endl;
@@ -164,9 +188,65 @@ void wyswietlWszystkichPrzyjaciol(vector <Przyjaciel> &przyjaciele) {
     }
     system("pause");
 }
-void wyswietlMenuKsiazkiAdresowej(int idZalogowanegoUzytkownika)
+int wczytajIDOstatniegoPrzyjaciela()
 {
+     fstream plik;
+     plik.open("przyjaciele.txt",ios::in);
+    plik.seekg(-3, ios::end);
+    char wskaznik;
+   while(wskaznik!='\n')
+   {
+       plik.seekg(-3,ios::cur);
+       wskaznik=plik.get();
+   }
+     string linia;
+    getline(plik,linia,'|');
+    int liczba=konwersjaStringNaInt(linia);
+    plik.close();
+    return liczba;
+}
+void zapiszPrzyjaciolWPlikuTekstowym(Przyjaciel nowyPrzyjaciel, int idUzytkownika)
+{
+         fstream plikt;
+        plikt.open("przyjaciele.txt",ios::out|ios::app);
+        plikt.seekg(0, ios::end);
+            plikt<<nowyPrzyjaciel.id<<'|';
+            plikt<<idUzytkownika<<'|';
+            plikt<<nowyPrzyjaciel.imie<<'|';
+            plikt<<nowyPrzyjaciel.nazwisko<<'|';
+            plikt<<nowyPrzyjaciel.numerTelefonu<<'|';
+            plikt<<nowyPrzyjaciel.email<<'|';
+            plikt<<nowyPrzyjaciel.adres<<'|';
+            plikt<<endl;
+        plikt.close();
 
+}
+void dodajPrzyjacielaDoListy(vector<Przyjaciel> &przyjaciele, int idUzytkownika) {
+    Przyjaciel nowyPrzyjaciel;
+    cout<<"Podaj imie znajomego: ";
+    cin>>nowyPrzyjaciel.imie;
+    cout<<"Podaj nazwisko znajomego: ";
+    cin>>nowyPrzyjaciel.nazwisko;
+    cout<<"Podaj email znajomego: ";
+    cin>>nowyPrzyjaciel.email;
+    cout<<"Podaj numer telefonu znajomego: ";
+    cin.sync();
+    getline(cin,nowyPrzyjaciel.numerTelefonu);
+    cout<<"Podaj adres znajomego: ";
+    cin.sync();
+    getline(cin,nowyPrzyjaciel.adres);
+
+    if (przyjaciele.size()>0) {
+        nowyPrzyjaciel.id=wczytajIDOstatniegoPrzyjaciela();
+        nowyPrzyjaciel.id+=1;
+    } else
+        nowyPrzyjaciel.id=1;
+    przyjaciele.push_back(nowyPrzyjaciel);
+    zapiszPrzyjaciolWPlikuTekstowym(nowyPrzyjaciel,idUzytkownika);
+    Sleep(1500);
+}
+void wyswietlMenuKsiazkiAdresowej(int idZalogowanegoUzytkownika, vector <Uzytkownik> &uzytkownicy)
+{
         system("cls");
         char wybor;
         vector <Przyjaciel> przyjaciele;
@@ -179,13 +259,15 @@ void wyswietlMenuKsiazkiAdresowej(int idZalogowanegoUzytkownika)
         cout<<"4.Wyswietl wszystkich przyjaciol"<<endl;
         cout<<"5.Usun z listy przyjaciol"<<endl;
         cout<<"6.Edytuj dane wybranego przyjaciela"<<endl;
+        cout<<"7.Zmieñ has³o"<<endl;
+        cout<<"8.Wyloguj siê"<<endl;
         cout<<"9.Wyjscie z programu"<<endl;
         cin>>wybor;
 
         switch(wybor) {
         case '1': {
             system("cls");
-            //dodajPrzyjacielaDoListy(przyjaciele);
+            dodajPrzyjacielaDoListy(przyjaciele,idZalogowanegoUzytkownika);
             break;
         }
         case '2': {
@@ -221,6 +303,14 @@ void wyswietlMenuKsiazkiAdresowej(int idZalogowanegoUzytkownika)
             }
           zapiszPrzyjaciolWPlikuTekstowym(przyjaciele);*/
             break;
+        case '7': {
+            zmianaHasla(uzytkownicy,idZalogowanegoUzytkownika);
+            break;
+        }
+        case '8': {
+            idZalogowanegoUzytkownika=0;
+            return;
+        }
         case '9': {
             exit(0);
         }
@@ -266,7 +356,7 @@ int main() {
             }
             }
             else {
-                wyswietlMenuKsiazkiAdresowej(idZalogowanegoUzytkownika);
+                wyswietlMenuKsiazkiAdresowej(idZalogowanegoUzytkownika,uzytkownicy);
             }
         }
 

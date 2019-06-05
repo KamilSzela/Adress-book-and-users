@@ -1,0 +1,11 @@
+1|1|kamil|szela|12341242|kszela@gmail.com|sedziszow|
+2|1|stephen|king|713467|sking@gmail.com|bangor maine|
+3|2|szczepan|akrobata|37461|szczep@com|krakow|
+4|1|terry|prachett|1234 2323|pracht@com|new york us|
+5|2|witold|gadowski|34 2345 34|gadowski@com|krakow|
+6|1|C.S.S.|Lewis|12 234 123|none|oxford england|
+7|3|tomasz|kot|123 342 123|kot.miau@com|warszawa|
+8|2|krzysztof|karon|134 245 454|historiasztuki@com|lublin|
+9|2|konrad|szela|134 214 234|kon@com|lodz|
+10|1|konrad|szela|134 23445|kon@com|lodz|
+11|3|jerzy|stuhr|134 345 544|jsturh@com|bytom|
