@@ -343,6 +343,95 @@ void edytujPrzyjacielaZZapisemDoPliku(vector <Przyjaciel> &przyjaciele, int idZa
     remove("przyjaciele.txt");
     rename("przyjaciele_tymczasowy.txt","przyjaciele.txt");
 }
+void usunZListyPrzyjaciol(vector <Przyjaciel> &przyjaciele) {
+    if(przyjaciele.size()==0)
+        cout<<"Brak zapisanych przyjaciol";
+    else {
+        int numerIDPrzyjaciela;
+        cout<<"Podaj numer ID przyjaciela ktorego chcesz usunac z listy: ";
+        cin>>numerIDPrzyjaciela;
+        bool znalezionoIDPrzyjaciela=false;
+        for(vector<Przyjaciel>::iterator i=przyjaciele.begin(); i<przyjaciele.end(); i++) {
+            if(i->id==numerIDPrzyjaciela) {
+                wyswietlPrzyjaciela(*i);
+                cout<<"czy na pewno chcesz usnunac przyjaciela z listy(wcisnij 't' aby potwierdzic): ";
+                cin.ignore();
+                if(getchar()=='t') {
+                    przyjaciele.erase(i);
+                    znalezionoIDPrzyjaciela=true;
+                    cout<<"Usunieto przyjaciela z listy. ";
+                } else {
+                    cout<<"Nie usunieto przyjaciela";
+                    znalezionoIDPrzyjaciela=true;
+                }
+            }
+        }
+        if (znalezionoIDPrzyjaciela==false) {
+            cout<<"Nie znalezniono przyjaciela o podanym ID.";
+        }
+        fstream plik, plikTymczasowy;
+    string linia;
+    plikTymczasowy.open("przyjaciele_tymczasowy.txt",ios::out);
+    plik.open("przyjaciele.txt",ios::in);
+    while(!plik.eof())
+    {
+       getline(plik,linia,'|');
+        if(linia=="\n"||linia=="") {
+                break;
+            }
+       int iDPobraneZPliku=konwersjaStringNaInt(linia);
+       if(iDPobraneZPliku==numerIDPrzyjaciela)
+       {
+           getline(plik,linia);
+       }
+       else
+       {
+           plikTymczasowy<<linia<<'|';
+           getline(plik,linia);
+           plikTymczasowy<<linia<<endl;
+       }
+    }
+    plik.close();
+    plikTymczasowy.close();
+    remove("przyjaciele.txt");
+    rename("przyjaciele_tymczasowy.txt","przyjaciele.txt");
+    }
+    Sleep(3000);
+}
+void wyszukajPrzyjaciolOPodanymImieniu(vector<Przyjaciel> &przyjaciele) {
+    string szukaneImie;
+    int znalezieni=0;
+    cout<<"Prosze podac imie do wyszukiwania przyjaciol: ";
+    cin>>szukaneImie;
+    for(vector<Przyjaciel> ::iterator itr=przyjaciele.begin(); itr!=przyjaciele.end(); itr++) {
+        if(itr->imie==szukaneImie) {
+            wyswietlPrzyjaciela(*itr);
+            znalezieni++;
+        }
+    }
+    if(znalezieni==0)
+        cout<<"nie znaleziono przyjaciol o tym imieniu"<<endl;
+    else
+        cout<<"znaleziono "<<znalezieni<<" przyjaciol o podanym imieniu"<<endl;
+    system("pause");
+}
+void wyszukajPrzyjaciolOPodanymNazwisku(vector<Przyjaciel> &przyjaciele) {
+    string szukaneNazwisko;
+    int znalezieni=0;
+    cout<<"Prosze podac nazwisko do wyszukiwania przyjaciol: ";
+    cin>>szukaneNazwisko;
+    for(vector<Przyjaciel> ::iterator itr=przyjaciele.begin(); itr!=przyjaciele.end(); itr++) {
+        if(itr->nazwisko==szukaneNazwisko) {
+            wyswietlPrzyjaciela(*itr);
+            znalezieni++;
+        }
+    }
+    if(znalezieni==0)
+        cout<<"nie znaleziono przyjaciol o tym nazwisku"<<endl;
+    else
+        cout<<"znaleziono "<<znalezieni<<" przyjaciol o podanym nazwisku"<<endl;
+    system("pause");
+}
 
 int main() {
     vector <Uzytkownik> uzytkownicy;
@@ -411,12 +500,12 @@ int main() {
         }
         case '2': {
             system("cls");
-            //wyszukajPrzyjaciolOPodanymImieniu(przyjaciele);
+            wyszukajPrzyjaciolOPodanymImieniu(przyjaciele);
             break;
         }
         case '3': {
             system("cls");
-            //wyszukajPrzyjaciolOPodanymNazwisku(przyjaciele);
+            wyszukajPrzyjaciolOPodanymNazwisku(przyjaciele);
             break;
         }
         case '4': {
@@ -428,7 +517,9 @@ int main() {
         }
         case '5':
             system("cls");
-            //usunZListyPrzyjaciol(przyjaciele);
+            usunZListyPrzyjaciol(przyjaciele);
+             cout<<endl<<"id uzytk po usunieciu: "<<idZalogowanegoUzytkownika<<endl;
+                system("pause");
             break;
         case '6':
             system("cls");
