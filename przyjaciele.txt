@@ -9,3 +9,4 @@
 9|2|konrad|szela|134 214 234|kon@com|lodz|
 10|1|konrad|szela|134 23445|kon@com|lodz|
 11|3|jerzy|stuhr|134 345 544|jsturh@com|bytom|
+12|1|J.R.R|Tolkien|325 345 123|none|Oxford|

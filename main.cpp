@@ -192,12 +192,17 @@ int wczytajIDOstatniegoPrzyjaciela()
 {
      fstream plik;
      plik.open("przyjaciele.txt",ios::in);
-    plik.seekg(-3, ios::end);
+    plik.seekg(-3, ios::end); //ustawiam wskaznik na koniec pliku
     char wskaznik;
    while(wskaznik!='\n')
    {
-       plik.seekg(-3,ios::cur);
+       plik.seekg(-3,ios::cur); // cofam sie w linijce az napotkam znak nowej linii
        wskaznik=plik.get();
+       if (plik.tellg()==2) //lub nie dotre na poczatek pliku
+       {
+           plik.seekg(0,ios::beg);
+           break;
+       }
    }
      string linia;
     getline(plik,linia,'|');
@@ -221,7 +226,7 @@ void zapiszPrzyjaciolWPlikuTekstowym(Przyjaciel nowyPrzyjaciel, int idUzytkownik
         plikt.close();
 
 }
-void dodajPrzyjacielaDoListy(vector<Przyjaciel> &przyjaciele, int *idUzytkownika) {
+void dodajPrzyjacielaDoListy(vector<Przyjaciel> &przyjaciele, int idUzytkownika) {
     Przyjaciel nowyPrzyjaciel;
     cout<<"Podaj imie znajomego: ";
     cin>>nowyPrzyjaciel.imie;
@@ -243,9 +248,9 @@ void dodajPrzyjacielaDoListy(vector<Przyjaciel> &przyjaciele, int *idUzytkownika
         nowyPrzyjaciel.id+=1;
     } else
         nowyPrzyjaciel.id=1;
-    przyjaciele.push_back(nowyPrzyjaciel);
-    zapiszPrzyjaciolWPlikuTekstowym(nowyPrzyjaciel,*idUzytkownika);
     plikTekstowy.close();
+    przyjaciele.push_back(nowyPrzyjaciel);
+    zapiszPrzyjaciolWPlikuTekstowym(nowyPrzyjaciel,idUzytkownika);
     Sleep(1500);
 }
 Przyjaciel edytujDanePrzyjaciela(Przyjaciel przyjacielDoEdycji) {
@@ -438,15 +443,10 @@ int main() {
     wczytajUzytkownikowZPliku(uzytkownicy);
     int idZalogowanegoUzytkownika=0;
     char wybor;
-    for (vector<Uzytkownik>:: iterator i=uzytkownicy.begin(); i!=uzytkownicy.end(); i++) {
-        cout<<i->id<<endl;
-        cout<<i->nazwa<<endl;
-        cout<<i->haslo<<endl;
-    }
-   system("pause");
     while(1) {
         if(idZalogowanegoUzytkownika==0) {
             system("cls");
+
             cout<<"MENU GLOWNE"<<endl;
             cout<<"--------------"<<endl;
             cout<<"1. Rejestracja"<<endl;
@@ -460,8 +460,6 @@ int main() {
             }
             case '2': {
                 idZalogowanegoUzytkownika=logowanie(uzytkownicy);
-                cout<<idZalogowanegoUzytkownika;
-                system("pause");
                 break;
             }
             case '9':
@@ -474,8 +472,6 @@ int main() {
                 system("cls");
         char wybor;
         vector <Przyjaciel> przyjaciele;
-        cout<<endl<<"id uzytk. przed menu"<<idZalogowanegoUzytkownika<<endl;
-                system("pause");
         wczytajPrzyjaciolzPliku(przyjaciele,idZalogowanegoUzytkownika);
         cout<<"MENU Ksiazka adresowa"<<endl;
         cout<<"-----------"<<endl;
@@ -493,9 +489,7 @@ int main() {
         switch(wybor) {
         case '1': {
             system("cls");
-            dodajPrzyjacielaDoListy(przyjaciele,&idZalogowanegoUzytkownika);
-            cout<<endl<<"id uzytk po dodaniu"<<idZalogowanegoUzytkownika<<endl;
-                system("pause");
+            dodajPrzyjacielaDoListy(przyjaciele,idZalogowanegoUzytkownika);
             break;
         }
         case '2': {
@@ -511,21 +505,15 @@ int main() {
         case '4': {
             system("cls");
             wyswietlWszystkichPrzyjaciol(przyjaciele);
-            cout<<endl<<"id uzytk po wyswietleniu"<<idZalogowanegoUzytkownika<<endl;
-                system("pause");
             break;
         }
         case '5':
             system("cls");
             usunZListyPrzyjaciol(przyjaciele);
-             cout<<endl<<"id uzytk po usunieciu: "<<idZalogowanegoUzytkownika<<endl;
-                system("pause");
             break;
         case '6':
             system("cls");
             edytujPrzyjacielaZZapisemDoPliku(przyjaciele,idZalogowanegoUzytkownika);
-            cout<<endl<<"id uzytk po edycji"<<idZalogowanegoUzytkownika<<endl;
-                system("pause");
             break;
         case '7': {
             zmianaHasla(uzytkownicy,idZalogowanegoUzytkownika);
