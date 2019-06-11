@@ -367,14 +367,17 @@ void usunZListyPrzyjaciol(vector <Przyjaciel> &przyjaciele) {
                     cout<<"Usunieto przyjaciela z listy. ";
                 } else {
                     cout<<"Nie usunieto przyjaciela";
-                    znalezionoIDPrzyjaciela=true;
+                    Sleep(1500);
+                    return;
                 }
             }
         }
         if (znalezionoIDPrzyjaciela==false) {
             cout<<"Nie znalezniono przyjaciela o podanym ID.";
         }
-        fstream plik, plikTymczasowy;
+    if(znalezionoIDPrzyjaciela==true)
+    {
+    fstream plik, plikTymczasowy;
     string linia;
     plikTymczasowy.open("przyjaciele_tymczasowy.txt",ios::out);
     plik.open("przyjaciele.txt",ios::in);
@@ -401,7 +404,8 @@ void usunZListyPrzyjaciol(vector <Przyjaciel> &przyjaciele) {
     remove("przyjaciele.txt");
     rename("przyjaciele_tymczasowy.txt","przyjaciele.txt");
     }
-    Sleep(3000);
+    }
+    Sleep(1500);
 }
 void wyszukajPrzyjaciolOPodanymImieniu(vector<Przyjaciel> &przyjaciele) {
     string szukaneImie;
